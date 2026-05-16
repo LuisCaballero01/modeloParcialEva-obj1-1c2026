@@ -2,7 +2,6 @@ import evas.*
 import nerv.*
 object asuka{
     var puntosDeEntrenamiento = 5
-    const evas = [] //¿?
     var ultimoEvaSincronizado = eva00
 
     method puntosDeEntrenamiento() = puntosDeEntrenamiento
