@@ -1,0 +1,52 @@
+import evas.*
+import nerv.*
+import pilotos.*
+describe "Tests" {
+    method initialize(){
+        cuartel.registrarEvas([eva01, eva02, eva00])
+        cuartel.registrarPilotos([shinji, asuka, rei])
+    }
+  test "El Eva01 no puede usarse más de 3 veces seguidas sin recargarse" {
+    cuartel.intentarSincronizar(eva01, asuka)
+    cuartel.intentarSincronizar(eva01, asuka)
+    cuartel.intentarSincronizar(eva01, asuka)
+    assert.notThat(cuartel.puedenSincronizarse(eva01, asuka))
+  }
+  test "En modo ataque, el Eva02 otorga 3 puntos de entrenamiento"{
+    eva02.cambiarModo(ataque)
+    cuartel.intentarSincronizar(eva02, shinji)
+    assert.equals(5, shinji.puntosDeEntrenamiento())
+  }
+  test "En modo ataque, el Eva02 consume 20 de energia"{
+    eva02.cambiarModo(ataque)
+    cuartel.intentarSincronizar(eva02, shinji)
+    assert.equals(80, eva02.energia())
+  }
+  test "Shinji puede sincronizar con el Eva00"{
+    assert.that(cuartel.puedenSincronizarse(eva00, shinji))
+  }
+  test "Rei no puede sincronizarse más de 5 veces"{
+    eva00.aumentarFuerza(11)
+    cuartel.intentarSincronizar(eva00, rei)
+    cuartel.intentarSincronizar(eva00, rei)
+    cuartel.intentarSincronizar(eva00, rei)
+    cuartel.intentarSincronizar(eva00, rei)
+    cuartel.intentarSincronizar(eva00, rei)
+    assert.notThat(cuartel.puedenSincronizarse(eva00, rei))
+  }
+  test "El promedio de puntos de entrenamiento es 3.5"{
+    assert.equals(2.33, cuartel.promedioPuntosEntrenamiento().truncate(2))
+  }
+  test "No todos los pilotos pueden utilizar al menos un Eva"{
+    assert.notThat(cuartel.todosPuedenUsarAlMenosUnEva())
+  }
+  test "Si el Eva00 aumenta 20 de fuerza, todos los pilotos pueden utilizar al menos un Eva."{
+    eva00.aumentarFuerza(20)
+    assert.that(cuartel.todosPuedenUsarAlMenosUnEva())
+  }
+  test "Rei está satisfecha luego de sincronizar con el Eva00 que tiene aumentado en 15 su fuerzaAT"{
+    eva00.aumentarFuerza(15)
+    cuartel.intentarSincronizar(eva00, rei)
+    assert.that(rei.estaSatisfecho())
+  }
+}
